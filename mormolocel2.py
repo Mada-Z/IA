@@ -122,7 +122,7 @@ class Graph:
                 for insecte in range(self.noduri[idx][3]+1):
                     if nodCurent.g_c - 1 + insecte > self.noduri[idx][4]:
                         break
-                    euristica = self.calculeaza_h(self.noduri[idx][0], self.noduri[idx][1], self.noduri[idx][2], insecte + nodCurent.g_c - 1, tip_euristica )
+                    euristica = self.calculeaza_h(self.noduri[idx][1], self.noduri[idx][2], insecte + nodCurent.g_c - 1, tip_euristica )
                     nodNou = NodParcurgere(self.noduri[idx][0],  # date
                                            self.noduri[idx][1],  # x
                                            self.noduri[idx][2],  # y
@@ -141,7 +141,7 @@ class Graph:
         #verifica daca greutatea curenta este mai mare decat 1
         return g>1
 
-    def calculeaza_h(self, date, x, y, g,  tip_euristica):
+    def calculeaza_h(self, x, y, g,  tip_euristica):
         if tip_euristica == "euristica banala":
             return self.euristica_banala( x, y, g)
         else:
@@ -154,7 +154,6 @@ class Graph:
 @stopit.threading_timeoutable(default="Functie oprita")
 def a_star(gr, nrSolutiiCautate, tip_euristica):
     start = time.time()
-    existaSolutii = False
     if not gr.verificaExistentaSolutie(gr.g):
         stop = time.time()
         timp = stop - start
@@ -190,7 +189,6 @@ def a_star(gr, nrSolutiiCautate, tip_euristica):
         nodCurent = c.pop(0)
 
         if gr.testeaza_scop(nodCurent.x, nodCurent.y, nodCurent.g_c):
-            existaSolutii = True
             stop = time.time()
             timp = stop - start
             g = open(gr.output, "a")
@@ -215,7 +213,6 @@ def a_star(gr, nrSolutiiCautate, tip_euristica):
 @stopit.threading_timeoutable(default="Functie oprita")
 def uniform_cost(gr, nrSolutiiCautate=1):
     start = time.time()
-    existaSolutii = False
     if not gr.verificaExistentaSolutie(gr.g):
         stop = time.time()
         timp = stop - start
@@ -229,7 +226,7 @@ def uniform_cost(gr, nrSolutiiCautate=1):
         stop = time.time()
         timp = stop - start
         g = open(gr.output, "a")
-        g.write("\nUCS\nBroscuta se afla deja pe mal!\n")
+        g.write("\nUCS\nBroscuta este deja pe mal!\n")
         g.write("Timp: " + str(timp))
         g.write("\n----------------\n\n")
         g.close()
@@ -251,7 +248,6 @@ def uniform_cost(gr, nrSolutiiCautate=1):
         nodCurent = c.pop(0)
 
         if gr.testeaza_scop(nodCurent.x, nodCurent.y, nodCurent.g_c):
-            existaSolutii = True
             stop = time.time()
             timp = stop - start
             g = open(gr.output, "a")
